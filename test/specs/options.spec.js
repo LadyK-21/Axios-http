@@ -1,3 +1,5 @@
+import AxiosHeaders from "../../lib/core/AxiosHeaders.js";
+
 describe('options', function () {
   beforeEach(function () {
     jasmine.Ajax.install();
@@ -65,6 +67,22 @@ describe('options', function () {
 
     getAjaxRequest().then(function (request) {
       expect(request.url).toBe('http://test.com/foo');
+      done();
+    });
+  });
+
+  it('should warn about baseUrl', function (done) {
+    spyOn(window.console, 'warn');
+
+    const instance = axios.create({
+      baseUrl: 'http://example.com/'
+    });
+
+    instance.get('/foo');
+
+    getAjaxRequest().then(function (request) {
+      expect(window.console.warn).toHaveBeenCalledWith('baseUrl is likely a misspelling of baseURL');
+      expect(request.url).toBe('/foo');
       done();
     });
   });
